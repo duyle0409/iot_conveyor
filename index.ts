@@ -5,6 +5,7 @@ import * as database from "./config/database";
 import { initMqtt, getClient } from "./config/mqtt";
 import { Server } from "socket.io";
 import http from "http";
+import path from "path";
 
 dotenv.config();
 
@@ -25,10 +26,12 @@ app.use(router);
 // View engine
 app.set("view engine", "pug");
 app.engine("html", require("ejs").renderFile);
-app.set("views", `${__dirname}/view`);
+// app.set("views", `${__dirname}/view`);
+app.set("views", path.join(__dirname, "view"));
 
 // Static folder
-app.use(express.static(`${__dirname}/public/`));
+// app.use(express.static(`${__dirname}/public/`));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Khởi tạo MQTT và truyền io vào
 initMqtt(io);
