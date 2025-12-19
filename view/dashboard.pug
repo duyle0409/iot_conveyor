@@ -32,7 +32,28 @@ html(lang="en")
         span#countXanh.badge.xanh Xanh: 0
         span#countDo.badge.do Đỏ: 0
         span#countVang.badge.vang Vàng: 0
+    .filters(style="margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap;")
+      form(method="GET" action="/dashboard" style="display: flex; gap: 10px;")
+        // Lọc theo màu
+        select(name="filterColor")
+          option(value="") -- Tất cả màu --
+          option(value="blue" selected=filters.filterColor=='blue') Có màu Xanh
+          option(value="red" selected=filters.filterColor=='red') Có màu Đỏ
+          option(value="green" selected=filters.filterColor=='green') Có màu Vàng
 
+        // Sắp xếp theo cột
+        select(name="sortBy")
+          option(value="startAt" selected=filters.sortBy=='startAt') Thời gian
+          option(value="totalBlue" selected=filters.sortBy=='totalBlue') Số lượng Xanh
+          option(value="totalRed" selected=filters.sortBy=='totalRed') Số lượng Đỏ
+
+        // Thứ tự
+        select(name="order")
+          option(value="desc" selected=filters.order=='desc') Giảm dần
+          option(value="asc" selected=filters.order=='asc') Tăng dần
+
+        button(type="submit" style="background: #34495e; color: white; padding: 5px 15px; border-radius: 4px;") Áp dụng
+        a(href="/dashboard" style="text-decoration: none; color: #7f8c8d; padding-top: 5px;") Xóa lọc
     // Bảng thống kê
     h2 Lịch sử Hoạt động
     table#sessionTable.session-table
