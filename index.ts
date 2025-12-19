@@ -42,6 +42,7 @@ io.on("connection", (socket) => {
 });
 
 // ---- CHỈ DÙNG server.listen ----
+const port = process.env.PORT || 3000;
 server.listen(3000, () => {
   console.log("Connected to port 3000");
 });

@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --inspect --exec \"node -r ts-node/register\" index.ts"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --inspect --exec \"node -r ts-node/register\" index.ts"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
