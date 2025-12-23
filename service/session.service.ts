@@ -24,9 +24,9 @@ export const processData = (data: any) => {
     if (color == "Do") currentCounts.Do += 1;
     if (color == "Xanh") currentCounts.Xanh += 1;
     if (color == "Vang") currentCounts.Vang += 1;
-
-    console.log("Count update:", currentCounts);
   }
+  console.log(currentCounts)
+  return currentCounts;
 };
 
 export const stopSession = async () => {

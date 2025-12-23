@@ -19,9 +19,12 @@
     "pug": "^3.0.3",
     "socket.io": "^4.8.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@types/node": "^25.0.3"
-  }
+  },
+  "repository": "https://github.com/duyle0409/iot_conveyor",
+  "author": "Vu Van Cuong <mm2cuong@gmail.com>"
 }

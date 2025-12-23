@@ -1,8 +1,9 @@
 // src/controller/dashboard.controller.ts
 import { Request, Response } from "express";
+import { PaginationHelper } from "../helper/pagination.helper";
 import Session from "../model/session.model";
 
-export const dashboard = async (req: Request, res: Response) => {
+export const index = async (req: Request, res: Response) => {
   const { filterColor, sortBy, order } = req.query;
   let query: any = { status: "stopped" };
 
@@ -17,6 +18,11 @@ export const dashboard = async (req: Request, res: Response) => {
     startOfToday.setHours(0, 0, 0, 0);
     query.startAt = { $gte: startOfToday };
   }
+  
+
+  //Pagination 
+  const countRecord = await Session.countDocuments();
+  const pagination = PaginationHelper(req, countRecord, 5);
 
   // 3. Sắp xếp
   let sortOptions: any = {};
@@ -27,12 +33,12 @@ export const dashboard = async (req: Request, res: Response) => {
     sortOptions.startAt = -1; // Mặc định mới nhất lên đầu
   }
 
-  const sessionList = await Session.find(query).sort(sortOptions);
+  const sessionList = await Session.find(query).sort(sortOptions).limit(pagination.limit).skip(pagination.skip ?? 0);
 
-  res.render("dashboard/dashboard", {
+  res.render("history/index", {
     sessionList: sessionList,
     filters: req.query ,// Gửi lại filter để giữ trạng thái trên giao diện
-    
-    pageTitle: "Tổng quan"
+    objectPagination: pagination,
+    pageTitle: "Thống kê"
   });
-};
+}

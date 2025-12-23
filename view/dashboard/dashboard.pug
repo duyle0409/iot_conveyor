@@ -1,0 +1,124 @@
+extends ../layout/default.pug
+
+block main
+  .dashboard
+    .dashboard__header
+      h1.dashboard__title HỆ THỐNG PHÂN LOẠI SẢN PHẨM
+      //- p.dashboard__subtitle Theo dõi trạng thái máy, điều chỉnh tốc độ PWM và xem lịch sử hoạt động.
+
+    .dashboard__grid
+      
+      // ===== Card: Trạng thái =====
+      .card
+        .card__head
+          h2.card__title TRẠNG THÁI SẢN PHẨM
+          p.card__desc Phân loại sản phẩm
+
+        .counters
+          div#countXanh.badge.badge--blue
+            span.label Xanh
+            span.value 0
+          div#countDo.badge.badge--red
+            span.label Đỏ
+            span.value 0
+          div#countVang.badge.badge--yellow
+            span.label Vàng
+            span.value 0
+      // ===== Card: Điều khiển =====
+      .card
+        .card__head
+          h2.card__title Điều khiển
+          p.card__desc Thao tác nhanh với hệ thống
+
+        .btn-row
+          button.btn.btn--success(type="button" onclick="sendCmd('ON')") Bật máy
+          button.btn.btn--secondary(type="button" onclick="sendCmd('OFF')") Tắt máy
+
+        .divider
+
+        h3.section-title Trạng thái kết nối
+        .system-status
+          span.system-status__label Trạng thái
+          span#systemStatus.system-status__value
+            span.status-dot
+            | Chưa kết nối...
+        h3.section-title Điều chỉnh tốc độ (PWM)
+        .speed
+          .speed__current
+            span.speed__label Tốc độ hiện tại
+            span#currentSpeed.speed__value 50
+
+          .btn-row
+            button.btn.btn--primary(type="button" onclick="sendCmd('SPEED:1')" data-level="1") Mức 1 (50)
+            button.btn.btn--primary(type="button" onclick="sendCmd('SPEED:2')" data-level="2") Mức 2 (70)
+            button.btn.btn--primary(type="button" onclick="sendCmd('SPEED:3')" data-level="3") Mức 3 (100)
+
+      
+
+    // ===== Card: Bộ lọc =====
+    //- .card
+    //-   .card__head
+    //-     h2.card__title Bộ lọc & sắp xếp
+    //-     p.card__desc Lọc theo màu, sắp xếp lịch sử
+
+    //-   .filters
+    //-     form.filters__form(method="GET" action="/dashboard")
+    //-       .field
+    //-         label.field__label(for="filterColor") Màu
+    //-         select#filterColor.field__control(name="filterColor")
+    //-           option(value="") -- Tất cả màu --
+    //-           option(value="blue" selected=filters.filterColor=='blue') Có màu Xanh
+    //-           option(value="red" selected=filters.filterColor=='red') Có màu Đỏ
+    //-           option(value="green" selected=filters.filterColor=='green') Có màu Vàng
+
+    //-       .field
+    //-         label.field__label(for="sortBy") Sắp xếp theo
+    //-         select#sortBy.field__control(name="sortBy")
+    //-           option(value="startAt" selected=filters.sortBy=='startAt') Thời gian
+    //-           option(value="totalBlue" selected=filters.sortBy=='totalBlue') Số lượng Xanh
+    //-           option(value="totalRed" selected=filters.sortBy=='totalRed') Số lượng Đỏ
+
+    //-       .field
+    //-         label.field__label(for="order") Thứ tự
+    //-         select#order.field__control(name="order")
+    //-           option(value="desc" selected=filters.order=='desc') Giảm dần
+    //-           option(value="asc" selected=filters.order=='asc') Tăng dần
+
+    //-       .filters__actions
+    //-         button.btn.btn--dark(type="submit") Áp dụng
+    //-         a.btn-link(href="/dashboard") Xóa lọc
+
+    //- // ===== Card: Bảng lịch sử =====
+    //- .card
+    //-   .card__head
+    //-     h2.card__title Lịch sử hoạt động
+    //-     p.card__desc Các phiên chạy gần đây
+
+    //-   .table-wrap
+    //-     table.table#sessionTable
+    //-       thead
+    //-         tr
+    //-           th #
+    //-           th Bắt đầu
+    //-           th Kết thúc
+    //-           th Thời gian
+    //-           th Xanh
+    //-           th Đỏ
+    //-           th Vàng
+    //-           th Tổng
+    //-       tbody
+    //-         each session, index in sessionList
+    //-           - const start = new Date(session.startAt)
+    //-           - const end = new Date(session.endAt)
+    //-           - const durationSec = Math.floor((end - start) / 1000)
+    //-           - const durationStr = `${Math.floor(durationSec / 60)}m ${durationSec % 60}s`
+    //-           - const total = session.totalBlue + session.totalRed + session.totalGreen
+    //-           tr
+    //-             td #{index + 1}
+    //-             td #{start.toLocaleString()}
+    //-             td #{end.toLocaleString()}
+    //-             td #{durationStr}
+    //-             td #{session.totalBlue}
+    //-             td #{session.totalRed}
+    //-             td #{session.totalGreen}
+    //-             td #{total}

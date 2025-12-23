@@ -19,17 +19,17 @@ export const initMqtt = (io: Server) => {
     console.log("MQTT connected");
     client.subscribe("esp/status");
     client.subscribe("esp/arduino/data");
+    client.subscribe("esp/ack");
   });
 
   client.on("message", (topic: string, message: Buffer) => {
     const msg = message.toString();
 
     if (topic === "esp/arduino/data") {
-      // --- SỬA LỖI Ở ĐÂY ---
-      // Chỉ xử lý nếu chuỗi bắt đầu bằng '{' (Dấu hiệu của JSON)
       if (msg.startsWith("{")) {
         try {
           processData(JSON.parse(msg));
+          io.emit("mqtt_data", { msg });
         } catch (error) {
           console.error("Lỗi parse JSON data:", msg);
         }
@@ -39,7 +39,18 @@ export const initMqtt = (io: Server) => {
       }
     }
 
-    io.emit("mqtt_message", { topic, msg });
+    if (topic === "esp/status") {
+      if(msg == "OFF"){
+        stopSession();
+      }
+      else{
+        startSession();
+      }
+      io.emit("mqtt_status", { msg });
+      
+    }
+
+    
   });
 
   client.on("error", (err) => {
@@ -57,7 +68,12 @@ export const initMqtt = (io: Server) => {
   io.on("connection", (socket) => {
     socket.on("send_cmd", (cmd: string) => {
       console.log("CMD from FE:", cmd);
-      publishCommand(cmd);
+
+      if(cmd == "WIFI"){
+        publishCommand("esp/arduino/wifi",cmd);
+        return;
+      }
+      publishCommand("esp/control", cmd);
 
       if (cmd == "ON") {
         startSession()
@@ -69,8 +85,8 @@ export const initMqtt = (io: Server) => {
   });
 };
 
-export const publishCommand = (cmd: string) => {
-  client.publish("esp/control", cmd);
+export const publishCommand = (topic: string, cmd: string) => {
+  client.publish(topic, cmd);
 };
 
 export const subscribeTopic = (topic: string) => {

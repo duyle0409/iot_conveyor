@@ -1,0 +1,120 @@
+extends ../layout/default.pug
+
+block main
+  // ===== Card: Bộ lọc & sắp xếp =====
+  .card
+    .card__head
+      h2.card__title Bộ lọc & sắp xếp
+      p.card__desc Lọc theo màu, sắp xếp lịch sử
+
+    .filters
+      form.filters__form(method="GET" action="/history")
+        .field
+          label.field__label(for="filterColor") Màu
+          select#filterColor.field__control(name="filterColor")
+            option(value="") -- Tất cả màu --
+            option(
+              value="xanh"
+              selected=filters && filters.filterColor == 'xanh'
+            ) Có màu Xanh
+            option(
+              value="do"
+              selected=filters && filters.filterColor == 'do'
+            ) Có màu Đỏ
+            option(
+              value="vang"
+              selected=filters && filters.filterColor == 'vang'
+            ) Có màu Vàng
+
+        .field
+          label.field__label(for="sortBy") Sắp xếp theo
+          select#sortBy.field__control(name="sortBy")
+            option(
+              value="startAt"
+              selected=filters && filters.sortBy == 'startAt'
+            ) Thời gian
+            option(
+              value="totalBlue"
+              selected=filters && filters.sortBy == 'totalBlue'
+            ) Số lượng Xanh
+            option(
+              value="totalRed"
+              selected=filters && filters.sortBy == 'totalRed'
+            ) Số lượng Đỏ
+            option(
+              value="totalGreen"
+              selected=filters && filters.sortBy == 'totalGreen'
+            ) Số lượng Vàng
+
+        .field
+          label.field__label(for="order") Thứ tự
+          select#order.field__control(name="order")
+            option(
+              value="desc"
+              selected=filters && filters.order == 'desc'
+            ) Giảm dần
+            option(
+              value="asc"
+              selected=filters && filters.order == 'asc'
+            ) Tăng dần
+
+        .filters__actions
+          button.btn.btn--dark(type="submit") Áp dụng
+          a.btn-link(href="/history") Xóa lọc
+
+
+  // ===== Card: Bảng lịch sử =====
+  .card
+    .card__head
+      h2.card__title Lịch sử hoạt động
+      p.card__desc Các phiên chạy gần đây
+
+    .table-wrap
+      table.table#sessionTable
+        thead
+          tr
+            th #
+            th Bắt đầu
+            th Kết thúc
+            th Thời gian
+            th Xanh
+            th Đỏ
+            th Vàng
+            th Tổng
+
+        tbody
+          if sessionList && sessionList.length 
+            each session, index in sessionList
+              - const start = new Date(session.startAt)
+              - const end = new Date(session.endAt)
+              - const durationSec = Math.floor((end - start) / 1000)
+              - const durationStr = `${Math.floor(durationSec / 60)}m ${durationSec % 60}s`
+              - const total = session.totalBlue + session.totalRed + session.totalGreen
+
+              tr
+                td #{index + 1}
+                td #{start.toLocaleString()}
+                td #{end.toLocaleString()}
+                td #{durationStr}
+                td #{session.totalBlue}
+                td #{session.totalRed}
+                td #{session.totalGreen}
+                td #{total}
+          else
+            tr
+              td(colspan="8" style="text-align:center; opacity:0.6")
+                | Không có dữ liệu lịch sử
+
+
+    // ===== Pagination =====
+    if objectPagination && objectPagination.totalPage > 1
+      ul.pagination
+
+        - for (var i = 1; i <= objectPagination.totalPage; i++)
+          li.page-item(class=objectPagination.currentPage == i ? "active" : "")
+            button.page-link(
+              type="button"
+              button-page=i
+            ) #{i}
+
+      
